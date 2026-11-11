@@ -1,0 +1,27 @@
+/* NOVAPLAY design tokens. Change the brand here, not in components. */
+:root {
+  --np-bg-rgb: 7 6 11;
+  --np-bg: rgb(var(--np-bg-rgb));
+  --np-surface-rgb: 17 15 24;
+  --np-surface: rgb(var(--np-surface-rgb));
+  --np-surface-2-rgb: 26 23 36;
+  --np-surface-2: rgb(var(--np-surface-2-rgb));
+  --np-border-rgb: 42 38 57;
+  --np-border: rgb(var(--np-border-rgb));
+  --np-violet-rgb: 124 77 255;
+  --np-violet: rgb(var(--np-violet-rgb));
+  --np-electric-rgb: 169 139 255;
+  --np-electric: rgb(var(--np-electric-rgb));
+  --np-deep-rgb: 42 18 89;
+  --np-deep: rgb(var(--np-deep-rgb));
+  --np-blue-rgb: 77 168 255;
+  --np-blue: rgb(var(--np-blue-rgb));
+  --np-text-rgb: 244 242 250;
+  --np-text: rgb(var(--np-text-rgb));
+  --np-muted-rgb: 160 155 180;
+  --np-muted: rgb(var(--np-muted-rgb));
+
+  --np-gradient-brand: linear-gradient(100deg, #a98bff 0%, #7c4dff 55%, #4da8ff 100%);
+  --np-shadow-glow: 0 0 0 1px rgb(169 139 255 / 0.35), 0 12px 40px -12px rgb(124 77 255 / 0.55);
+  --np-header-h: 64px;
+}
