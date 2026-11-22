@@ -6,13 +6,18 @@ import { LogoMark } from "@/components/brand/Logo";
 
 type ArtTitle = Pick<Title, "titleMn" | "type" | "hue" | "posterUrl" | "backdropUrl">;
 
-/** Generated brand artwork used when a title has no licensed image yet. */
+/**
+ * Generated brand artwork used when a title has no licensed image yet.
+ * The title's hue is folded into the palette's royal blue to cyan mint range
+ * (hue 155 to 235) so every poster stays on brand but still looks distinct.
+ */
 export function generatedBackground(hue: number): string {
+  const h = 155 + Math.round((((hue % 360) + 360) % 360) * (80 / 360));
   return [
-    `radial-gradient(120% 85% at 15% 0%, hsl(${hue} 85% 48% / 0.85), transparent 60%)`,
-    `radial-gradient(90% 70% at 100% 100%, hsl(${(hue + 48) % 360} 90% 38% / 0.75), transparent 58%)`,
-    `radial-gradient(60% 50% at 80% 10%, hsl(${(hue + 320) % 360} 80% 30% / 0.6), transparent 70%)`,
-    "#0c0a14",
+    `radial-gradient(120% 85% at 15% 0%, hsl(${h} 95% 45% / 0.8), transparent 60%)`,
+    `radial-gradient(90% 70% at 100% 100%, hsl(231 100% 45% / 0.75), transparent 58%)`,
+    `radial-gradient(60% 50% at 80% 10%, hsl(158 100% 50% / 0.35), transparent 70%)`,
+    "#0b0c16",
   ].join(", ");
 }
 

@@ -122,7 +122,7 @@ export function SearchBox({ initial, extraParams }: { initial: string; extraPara
             <X className="h-4 w-4" />
           </button>
         )}
-        <button type="submit" className="absolute right-2 top-1/2 h-10 -translate-y-1/2 rounded-full bg-violet px-5 text-sm font-medium text-white transition hover:bg-[#8b61ff]">
+        <button type="submit" className="absolute right-2 top-1/2 h-10 -translate-y-1/2 rounded-full bg-violet px-5 text-sm font-medium text-white transition hover:bg-[#1a3dff]">
           Хайх
         </button>
       </form>

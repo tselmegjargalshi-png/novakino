@@ -6,9 +6,9 @@ export function LogoMark({ className }: { className?: string }) {
     <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
       <defs>
         <linearGradient id="np-mark" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#C4B0FF" />
-          <stop offset="0.55" stopColor="#7C4DFF" />
-          <stop offset="1" stopColor="#4DA8FF" />
+          <stop stopColor="#00FFA3" />
+          <stop offset="0.55" stopColor="#00A8FF" />
+          <stop offset="1" stopColor="#1A3DFF" />
         </linearGradient>
       </defs>
       <path

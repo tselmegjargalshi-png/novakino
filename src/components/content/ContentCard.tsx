@@ -8,7 +8,7 @@ export function ContentCard({ title, sizes = "(min-width: 1024px) 200px, 40vw" }
   const meta = [title.releaseYear, title.genres[0]?.nameMn].filter(Boolean).join(" · ");
   return (
     <Link href={titleHref(title)} className="group block" aria-label={title.titleMn}>
-      <div className="relative aspect-[2/3] overflow-hidden rounded-card bg-surface ring-1 ring-white/5 transition duration-300 ease-nova group-hover:-translate-y-1 group-hover:ring-electric/60 group-hover:shadow-[0_18px_40px_-18px_rgb(124_77_255/0.7)]">
+      <div className="relative aspect-[2/3] overflow-hidden rounded-card bg-surface ring-1 ring-white/5 transition duration-300 ease-nova group-hover:-translate-y-1 group-hover:ring-electric/60 group-hover:shadow-[0_18px_40px_-18px_rgb(0_34_229/0.7)]">
         <Poster title={title} sizes={sizes} />
         <div className="absolute left-2 top-2 flex gap-1">
           {title.accessTier !== "standard" && (
