@@ -13,7 +13,7 @@
     font-feature-settings: "cv11", "ss01";
   }
   ::selection {
-    background: rgb(124 77 255 / 0.5);
+    background: rgb(0 34 229 / 0.6);
   }
   :focus-visible {
     outline: 2px solid var(--np-electric);
