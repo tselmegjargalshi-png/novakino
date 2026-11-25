@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { artworkUrl, createPublicClient } from "@/lib/supabase/server";
 import type { CatalogRepository, ContentType, Genre, Season, Title } from "./types";
 
@@ -73,12 +74,25 @@ async function loadAll(): Promise<Title[]> {
   }));
 }
 
+/**
+ * Catalog reads are shared across requests for 5 minutes (same window as page
+ * revalidation), so a page view no longer costs four Supabase queries.
+ * Call revalidateTag("catalog") after publishing to refresh immediately.
+ */
+const CACHE = { revalidate: 300, tags: ["catalog"] };
+const cachedLoadAll = unstable_cache(loadAll, ["catalog:all"], CACHE);
+
 export const supabaseRepository: CatalogRepository = {
   isDemo: false,
-  listTitles: loadAll,
+  listTitles: cachedLoadAll,
 
-  async getTitle(type: ContentType, slug: string) {
-    const all = await loadAll();
+  getTitle: (type: ContentType, slug: string) => cachedGetTitle(type, slug),
+  listGenres: () => cachedListGenres(),
+};
+
+const cachedGetTitle = unstable_cache(
+  async (type: ContentType, slug: string): Promise<Title | null> => {
+    const all = await cachedLoadAll();
     const base = all.find((t) => t.type === type && t.slug === slug);
     if (!base) return null;
 
@@ -113,11 +127,17 @@ export const supabaseRepository: CatalogRepository = {
       })),
     };
   },
+  ["catalog:title"],
+  CACHE,
+);
 
-  async listGenres(): Promise<Genre[]> {
+const cachedListGenres = unstable_cache(
+  async (): Promise<Genre[]> => {
     const db = createPublicClient();
     const { data, error } = await db.from("genres").select("slug, name_mn, applies_to").order("sort_order");
     if (error) throw new Error(`Genre list failed: ${error.message}`);
     return (data as any[]).map((g) => ({ slug: g.slug, nameMn: g.name_mn, appliesTo: g.applies_to }));
   },
-};
+  ["catalog:genres"],
+  CACHE,
+);
