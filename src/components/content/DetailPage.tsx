@@ -27,7 +27,8 @@ export async function detailMetadata(type: ContentType, slug: string): Promise<M
       title,
       description: t.synopsisMn,
       type: type === "movie" ? "video.movie" : "video.tv_show",
-      images: t.backdropUrl ?? t.posterUrl ? [{ url: (t.backdropUrl ?? t.posterUrl)! }] : undefined,
+      url: titleHref(t),
+      // The share image comes from the opengraph-image.tsx next to each detail route.
     },
   };
 }

@@ -1,4 +1,23 @@
 @import "../styles/tokens.css";
+/* Unbounded has no Ө ө Ү ү, so Mongolian headings fell back to another font for those
+   letters. These tiny patch files supply them (built by scripts/add-mongolian-glyphs.py). */
+@font-face {
+  font-family: "Unbounded";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/web/unbounded-mn-500.woff2") format("woff2");
+  unicode-range: U+04AE-04AF, U+04E8-04E9;
+}
+@font-face {
+  font-family: "Unbounded";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/web/unbounded-mn-600.woff2") format("woff2");
+  unicode-range: U+04AE-04AF, U+04E8-04E9;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

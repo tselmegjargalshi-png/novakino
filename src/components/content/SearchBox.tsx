@@ -2,7 +2,7 @@
 
 import { Search, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Poster } from "./Artwork";
 import Link from "next/link";
 import type { Title } from "@/lib/catalog/types";
@@ -29,7 +29,9 @@ export function SearchBox({ initial, extraParams }: { initial: string; extraPara
   const [focused, setFocused] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [recent, setRecent] = useState<string[]>([]);
+  const [active, setActive] = useState(-1);
   const boxRef = useRef<HTMLDivElement>(null);
+  const listId = useId();
 
   useEffect(() => setRecent(readRecent()), []);
   useEffect(() => setValue(initial), [initial]);
@@ -92,6 +94,39 @@ export function SearchBox({ initial, extraParams }: { initial: string; extraPara
 
   const showRecent = focused && value.trim().length < 2 && recent.length > 0;
   const showSuggestions = focused && value.trim().length >= 2 && suggestions.length > 0;
+  const options = showRecent ? recent.length : showSuggestions ? suggestions.length : 0;
+  const optionId = (i: number) => `${listId}-opt-${i}`;
+
+  // Reset the highlighted option whenever the list changes.
+  useEffect(() => setActive(-1), [showRecent, showSuggestions, suggestions, recent]);
+
+  const choose = (i: number) => {
+    if (showRecent) {
+      setValue(recent[i]);
+      submit(recent[i]);
+    } else if (showSuggestions) {
+      setFocused(false);
+      router.push(titleHref(suggestions[i]));
+    }
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") {
+      setFocused(false);
+      return;
+    }
+    if (!options) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActive((a) => (a + 1) % options);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActive((a) => (a <= 0 ? options - 1 : a - 1));
+    } else if (e.key === "Enter" && active >= 0) {
+      e.preventDefault();
+      choose(active);
+    }
+  };
 
   return (
     <div ref={boxRef} className="relative">
@@ -110,7 +145,12 @@ export function SearchBox({ initial, extraParams }: { initial: string; extraPara
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => setFocused(true)}
-          onKeyDown={(e) => e.key === "Escape" && setFocused(false)}
+          onKeyDown={onKeyDown}
+          role="combobox"
+          aria-expanded={options > 0}
+          aria-controls={listId}
+          aria-autocomplete="list"
+          aria-activedescendant={active >= 0 ? optionId(active) : undefined}
           maxLength={80}
           autoComplete="off"
           placeholder="Нэр, төрөл, он, жүжигчин, студиэр хайх"
@@ -137,10 +177,10 @@ export function SearchBox({ initial, extraParams }: { initial: string; extraPara
                   Арилгах
                 </button>
               </div>
-              <ul className="p-2">
-                {recent.map((r) => (
-                  <li key={r}>
-                    <button type="button" onClick={() => { setValue(r); submit(r); }} className="flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm text-ink hover:bg-white/5">
+              <ul id={listId} role="listbox" aria-label="Сүүлд хайсан" className="p-2">
+                {recent.map((r, i) => (
+                  <li key={r} id={optionId(i)} role="option" aria-selected={i === active}>
+                    <button type="button" tabIndex={-1} onClick={() => choose(i)} className={`flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm text-ink hover:bg-white/5 ${i === active ? "bg-white/10" : ""}`}>
                       <Search className="h-4 w-4 text-muted" />
                       {r}
                     </button>
@@ -150,10 +190,10 @@ export function SearchBox({ initial, extraParams }: { initial: string; extraPara
             </>
           )}
           {showSuggestions && (
-            <ul className="p-2">
-              {suggestions.map((s) => (
-                <li key={s.id}>
-                  <Link href={titleHref(s)} className="flex items-center gap-3 rounded-xl p-2 hover:bg-white/5">
+            <ul id={listId} role="listbox" aria-label="Санал болгох бүтээлүүд" className="p-2">
+              {suggestions.map((s, i) => (
+                <li key={s.id} id={optionId(i)} role="option" aria-selected={i === active}>
+                  <Link href={titleHref(s)} tabIndex={-1} onClick={() => setFocused(false)} className={`flex items-center gap-3 rounded-xl p-2 hover:bg-white/5 ${i === active ? "bg-white/10" : ""}`}>
                     <span className="relative h-14 w-10 shrink-0 overflow-hidden rounded-md [&_p]:hidden">
                       <Poster title={s} sizes="40px" />
                     </span>

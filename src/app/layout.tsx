@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "@fontsource-variable/inter";
 import "@fontsource/unbounded/500.css";
 import "@fontsource/unbounded/600.css";
@@ -20,7 +22,12 @@ export const viewport: Viewport = { themeColor: "#05050a", colorScheme: "dark" }
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="mn">
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Only collect data once enabled in the Vercel project (Analytics and Speed Insights tabs). */}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

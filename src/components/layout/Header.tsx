@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { Bookmark, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 
 const NAV = [
@@ -20,6 +20,8 @@ export function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -29,6 +31,19 @@ export function Header() {
   }, []);
 
   useEffect(() => setOpen(false), [pathname]);
+
+  // While the mobile menu is open, the page behind it is inert so Tab stays in the menu.
+  useEffect(() => {
+    if (!open) return;
+    const behind = Array.from(document.querySelectorAll<HTMLElement>("main, footer, [data-demo-notice]"));
+    behind.forEach((el) => (el.inert = true));
+    navRef.current?.querySelector<HTMLElement>("a")?.focus();
+    const toggle = toggleRef.current;
+    return () => {
+      behind.forEach((el) => (el.inert = false));
+      toggle?.focus();
+    };
+  }, [open]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -81,6 +96,7 @@ export function Header() {
             <Bookmark className="h-5 w-5" strokeWidth={1.75} />
           </Link>
           <button
+            ref={toggleRef}
             type="button"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
@@ -95,7 +111,7 @@ export function Header() {
 
     </header>
       {open && (
-        <nav id="mobile-nav" aria-label="Гар утасны цэс" className="fixed inset-0 z-40 overflow-y-auto bg-bg/95 pt-[calc(var(--np-header-h)+48px)] backdrop-blur-xl lg:hidden">
+        <nav ref={navRef} id="mobile-nav" aria-label="Гар утасны цэс" className="fixed inset-0 z-40 overflow-y-auto bg-bg/95 pt-[calc(var(--np-header-h)+48px)] backdrop-blur-xl lg:hidden">
           <ul className="page py-4">
             {NAV.map((item) => {
               const active = item.match(pathname);
