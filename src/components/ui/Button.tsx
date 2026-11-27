@@ -34,3 +34,10 @@ export function ButtonLink({
 }: ComponentProps<typeof Link> & { variant?: Variant; size?: Size }) {
   return <Link className={buttonClass(variant, size, className)} {...props} />;
 }
+
+/** One look for every round icon control (rail arrows, hero controls) so they read as one family. */
+export const iconButtonClass = (className?: string) =>
+  clsx(
+    "inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/30 text-ink backdrop-blur transition duration-200 ease-nova hover:border-electric hover:text-electric disabled:pointer-events-none disabled:opacity-30",
+    className,
+  );

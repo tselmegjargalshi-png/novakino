@@ -26,16 +26,16 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         <div className="mt-6 max-w-3xl">
           <SearchBox initial={query.q ?? ""} extraParams={extra.toString()} />
         </div>
-        <div className="mt-5">
+        {/* Filters and the result count share one row: the count describes what the filters produced. */}
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b border-white/5 pb-5">
           <FilterBar query={query} genres={genres} years={availableYears(all)} showType showStatus showRating={all.some((t) => t.externalRating != null)} />
+          <p className="text-sm text-muted" aria-live="polite">
+            {hasQuery
+              ? `${[query.q && `"${query.q}"`, genreName].filter(Boolean).join(", ") || "Шүүлтүүр"}: ${results.length} илэрц`
+              : `Нийт ${results.length} бүтээл`}
+          </p>
         </div>
-
-        <p className="mt-7 text-sm text-muted" aria-live="polite">
-          {hasQuery
-            ? `${[query.q && `"${query.q}"`, genreName].filter(Boolean).join(", ") || "Шүүлтүүр"}: ${results.length} илэрц`
-            : `Нийт ${results.length} бүтээл`}
-        </p>
-        <div className="mt-4">
+        <div className="mt-6">
           {results.length > 0 ? (
             <ContentGrid titles={results} />
           ) : (

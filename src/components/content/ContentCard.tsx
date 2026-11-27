@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Link from "next/link";
 import type { Title } from "@/lib/catalog/types";
 import { titleHref } from "@/lib/catalog/query";
@@ -12,7 +13,13 @@ export function ContentCard({ title, sizes = "(min-width: 1024px) 200px, 40vw" }
         <Poster title={title} sizes={sizes} />
         <div className="absolute left-2 top-2 flex gap-1">
           {title.accessTier !== "standard" && (
-            <span className="rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-electric backdrop-blur">
+            <span
+              className={clsx(
+                "rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide backdrop-blur",
+                // Different meanings get different looks: premium is the accent, free stays neutral.
+                title.accessTier === "premium" ? "text-electric" : "text-ink",
+              )}
+            >
               {tierLabel[title.accessTier]}
             </span>
           )}

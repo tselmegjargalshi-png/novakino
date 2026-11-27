@@ -7,7 +7,8 @@ import type { Title } from "@/lib/catalog/types";
 import { titleHref } from "@/lib/catalog/query";
 import { formatRuntime, statusLabel, typeLabel } from "@/lib/i18n/mn";
 import { Badge } from "@/components/ui/Badge";
-import { ButtonLink } from "@/components/ui/Button";
+import { ButtonLink, iconButtonClass } from "@/components/ui/Button";
+import { MetaList } from "@/components/ui/MetaList";
 import { Backdrop } from "./Artwork";
 import { WatchlistButton } from "./WatchlistButton";
 
@@ -71,18 +72,18 @@ export function Hero({ titles }: { titles: Title[] }) {
               </h1>
               <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-ink/85">
                 {t.ageRating && <Badge tone="outline">{t.ageRating}</Badge>}
-                {t.externalRating != null && (
-                  <span className="inline-flex items-center gap-1 font-medium">
-                    <Star className="h-3.5 w-3.5 fill-current text-electric" />
-                    {t.externalRating.toFixed(1)}
-                    {t.externalRatingSource && <span className="text-muted">{t.externalRatingSource}</span>}
-                  </span>
-                )}
-                {meta.map((m) => (
-                  <span key={String(m)} className="text-ink/80">
-                    {m}
-                  </span>
-                ))}
+                <MetaList
+                  items={[
+                    t.externalRating != null && (
+                      <span className="inline-flex items-center gap-1 font-medium text-ink">
+                        <Star className="h-3.5 w-3.5 fill-current text-electric" />
+                        {t.externalRating.toFixed(1)}
+                        {t.externalRatingSource && <span className="font-normal text-muted">{t.externalRatingSource}</span>}
+                      </span>
+                    ),
+                    ...meta,
+                  ]}
+                />
               </div>
               {t.synopsisMn && <p className="mt-5 line-clamp-3 max-w-xl text-[15px] leading-relaxed text-ink/80 sm:text-base">{t.synopsisMn}</p>}
               <div className="mt-7 flex flex-wrap gap-3">
@@ -113,13 +114,13 @@ export function Hero({ titles }: { titles: Title[] }) {
               ))}
             </div>
             <div className="flex items-center gap-2">
-              <button type="button" onClick={() => setPlaying((p) => !p)} aria-label={playing ? "Автомат солигдохыг зогсоох" : "Автомат солигдохыг үргэлжлүүлэх"} className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/30 text-ink backdrop-blur transition hover:border-electric">
+              <button type="button" onClick={() => setPlaying((p) => !p)} aria-label={playing ? "Автомат солигдохыг зогсоох" : "Автомат солигдохыг үргэлжлүүлэх"} className={iconButtonClass()}>
                 {playing ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
               </button>
-              <button type="button" onClick={() => go(-1)} aria-label="Өмнөх бүтээл" className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/30 text-ink backdrop-blur transition hover:border-electric">
+              <button type="button" onClick={() => go(-1)} aria-label="Өмнөх бүтээл" className={iconButtonClass()}>
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <button type="button" onClick={() => go(1)} aria-label="Дараах бүтээл" className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/30 text-ink backdrop-blur transition hover:border-electric">
+              <button type="button" onClick={() => go(1)} aria-label="Дараах бүтээл" className={iconButtonClass()}>
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>

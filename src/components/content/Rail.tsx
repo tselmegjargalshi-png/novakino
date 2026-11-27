@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { iconButtonClass } from "@/components/ui/Button";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 /** Horizontally scrolling row. Touch scroll on phones, arrow buttons on desktop. */
@@ -29,7 +30,7 @@ export function Rail({ title, href, children }: { title: string; href?: string; 
         <h2 className="font-display text-lg font-semibold tracking-tight sm:text-xl">{title}</h2>
         <div className="flex items-center gap-2">
           {href && (
-            <Link href={href} className="mr-1 text-sm text-muted transition-colors hover:text-electric">
+            <Link href={href} className="mr-1 shrink-0 whitespace-nowrap text-sm text-muted transition-colors hover:text-electric">
               Бүгдийг үзэх
             </Link>
           )}
@@ -38,7 +39,7 @@ export function Rail({ title, href, children }: { title: string; href?: string; 
             onClick={() => scroll(-1)}
             disabled={edges.start}
             aria-label={`${title}: өмнөх`}
-            className="hidden h-9 w-9 items-center justify-center rounded-full border border-line text-ink transition hover:border-electric disabled:opacity-30 md:inline-flex"
+            className={iconButtonClass("hidden md:inline-flex")}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -47,7 +48,7 @@ export function Rail({ title, href, children }: { title: string; href?: string; 
             onClick={() => scroll(1)}
             disabled={edges.end}
             aria-label={`${title}: дараах`}
-            className="hidden h-9 w-9 items-center justify-center rounded-full border border-line text-ink transition hover:border-electric disabled:opacity-30 md:inline-flex"
+            className={iconButtonClass("hidden md:inline-flex")}
           >
             <ChevronRight className="h-4 w-4" />
           </button>
