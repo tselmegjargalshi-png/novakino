@@ -9,6 +9,7 @@ import type { ContentType, Title } from "@/lib/catalog/types";
 import { countryLabel, formatRuntime, languageLabel, statusLabel, tierLabel, typeLabel } from "@/lib/i18n/mn";
 import { site } from "@/lib/site";
 import { Badge } from "@/components/ui/Badge";
+import { MetaList } from "@/components/ui/MetaList";
 import { Backdrop, Poster } from "./Artwork";
 import { ContentCard } from "./ContentCard";
 import { Rail, RailItem } from "./Rail";
@@ -79,32 +80,37 @@ export async function DetailPage({ type, slug }: { type: ContentType; slug: stri
       <div className="relative -mt-[var(--np-header-h)] overflow-hidden pt-[var(--np-header-h)]">
         <Backdrop title={t} priority className="opacity-70" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/80 to-bg/30" />
-        <div className="page relative grid gap-8 pb-10 pt-10 sm:pt-16 md:grid-cols-[240px_1fr] lg:grid-cols-[280px_1fr] lg:gap-12">
+        {/* Breadcrumb sits on its own row above the poster and text, so it reads as page
+            navigation rather than as part of the title block. */}
+        <nav aria-label="Байршил" className="page relative pt-6 text-xs text-muted sm:pt-8">
+          <Link href="/" className="hover:text-ink">Нүүр</Link>
+          <span className="mx-2" aria-hidden="true">/</span>
+          <Link href={catalogHref(t.type)} className="hover:text-ink">{typeLabel[t.type]}</Link>
+        </nav>
+        <div className="page relative grid gap-8 pb-10 pt-6 sm:pt-8 md:grid-cols-[240px_1fr] lg:grid-cols-[280px_1fr] lg:gap-12">
           <div className="relative mx-auto aspect-[2/3] w-44 overflow-hidden rounded-card shadow-2xl ring-1 ring-white/10 md:mx-0 md:w-full">
             <Poster title={t} sizes="(min-width: 1024px) 280px, 240px" priority />
           </div>
           <div className="min-w-0 self-end">
-            <nav aria-label="Байршил" className="text-xs text-muted">
-              <Link href="/" className="hover:text-ink">Нүүр</Link>
-              <span className="mx-2">/</span>
-              <Link href={catalogHref(t.type)} className="hover:text-ink">{typeLabel[t.type]}</Link>
-            </nav>
-            <h1 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight [text-wrap:balance] sm:text-4xl lg:text-5xl">{t.titleMn}</h1>
+            <h1 className="font-display text-3xl font-semibold leading-tight tracking-tight [text-wrap:balance] sm:text-4xl lg:text-5xl">{t.titleMn}</h1>
             {altTitles.length > 0 && <p className="mt-2 text-sm text-muted">{altTitles.join(" · ")}</p>}
 
             <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-ink/85">
               {t.ageRating && <Badge tone="outline">{t.ageRating}</Badge>}
-              <Badge tone="accent">{tierLabel[t.accessTier]}</Badge>
-              {t.externalRating != null && (
-                <span className="inline-flex items-center gap-1 font-medium">
-                  <Star className="h-3.5 w-3.5 fill-current text-electric" />
-                  {t.externalRating.toFixed(1)}
-                  {t.externalRatingSource && <span className="font-normal text-muted">{t.externalRatingSource}</span>}
-                </span>
-              )}
-              {meta.map((m) => (
-                <span key={String(m)}>{m}</span>
-              ))}
+              {/* Only call out a tier when it differs from the default, and keep the accent for premium. */}
+              {t.accessTier !== "standard" && <Badge tone={t.accessTier === "premium" ? "accent" : "neutral"}>{tierLabel[t.accessTier]}</Badge>}
+              <MetaList
+                items={[
+                  t.externalRating != null && (
+                    <span className="inline-flex items-center gap-1 font-medium text-ink">
+                      <Star className="h-3.5 w-3.5 fill-current text-electric" />
+                      {t.externalRating.toFixed(1)}
+                      {t.externalRatingSource && <span className="font-normal text-muted">{t.externalRatingSource}</span>}
+                    </span>
+                  ),
+                  ...meta,
+                ]}
+              />
             </div>
 
             {t.genres.length > 0 && (
@@ -137,7 +143,6 @@ export async function DetailPage({ type, slug }: { type: ContentType; slug: stri
           {t.audioLanguages.length > 0 && <Fact label="Дууны хэл">{t.audioLanguages.map(languageLabel).join(", ")}</Fact>}
           {t.subtitleLanguages.length > 0 && <Fact label="Хадмал">{t.subtitleLanguages.map(languageLabel).join(", ")}</Fact>}
           {t.maxResolution && <Fact label="Дээд чанар">{t.maxResolution >= 2160 ? "4K" : `${t.maxResolution}p`}</Fact>}
-          {t.ageRating && <Fact label="Насны ангилал">{t.ageRating}</Fact>}
         </dl>
 
         {t.type !== "movie" && (

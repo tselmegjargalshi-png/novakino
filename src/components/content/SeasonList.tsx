@@ -37,7 +37,7 @@ export function SeasonList({ seasons }: { seasons: Season[] }) {
         <ol className="mt-5 divide-y divide-white/5 rounded-card border border-line bg-surface">
           {season.episodes.map((e) => (
             <li key={e.number} className="flex items-start gap-4 px-4 py-4 sm:px-5">
-              <span className="w-8 shrink-0 pt-0.5 font-display text-base text-electric">{e.number}</span>
+              <span className="w-8 shrink-0 pt-0.5 font-display text-base text-muted">{e.number}</span>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-ink">{e.titleMn ?? `${e.number}-р анги`}</p>
                 {e.synopsisMn && <p className="mt-1 text-sm leading-relaxed text-muted">{e.synopsisMn}</p>}
